@@ -11,16 +11,20 @@ var accel = require('accel-mma84').use(tessel.port['A']);
 
 // Initialize the accelerometer.
 accel.on('ready', function() {
+  let lastReading = 0;
+  let isHit = false;
+  let counter = 0;
   // Stream accelerometer data
   accel.on('data', function(xyz) {
-    console.log(
-      'x:',
-      xyz[0].toFixed(2),
-      'y:',
-      xyz[1].toFixed(2),
-      'z:',
-      xyz[2].toFixed(2)
-    );
+    let thisReading = xyz[0];
+    // console.log('x:', xyz[0].toFixed(2));
+    if (Math.abs(thisReading - lastReading) > 0.1) {
+      isHit = true;
+      console.log('HIT!', ++counter);
+    } else {
+      isHit = false;
+    }
+    lastReading = thisReading;
   });
 });
 
